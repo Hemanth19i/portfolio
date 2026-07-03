@@ -1,0 +1,63 @@
+/* ============================================================
+   DESIGN TOKENS — canonical values.
+   Mirrored by src/lib/tokens.ts — `npm run check:tokens` fails
+   the build if the two files ever disagree. (Governance §1)
+   ============================================================ */
+
+:root {
+  /* ---------- color ---------- */
+  --void: #070b14; /* page background, deepest layer */
+  --graphite: #0d1321; /* scene background, fog color */
+  --panel: #131b2e; /* glass base — applied at 72% + blur */
+  --line: #243049; /* hairlines, borders, wireframe edges */
+  --text-hi: #e8edf7; /* headlines, primary text */
+  --text-lo: #8b96ad; /* secondary text, mono labels (>=12px only) */
+  --current: #3d8bff; /* THE color: pipeline, primary actions */
+  --signal: #7de3f4; /* packets, live values, ok states */
+  --depth: #8b7cf6; /* hover glow, secondary accent */
+  --threat: #f4756b; /* SecureRAG scene ONLY */
+  --ok: #4ade80; /* availability dot, verdict */
+
+  /* ---------- surfaces ---------- */
+  --glass-bg: color-mix(in srgb, var(--panel) 72%, transparent);
+  --glass-blur: 20px;
+  --glass-highlight: rgba(255, 255, 255, 0.08);
+  --radius-s: 8px;
+  --radius-m: 16px;
+  --radius-l: 24px;
+
+  /* ---------- spacing (4px base) ---------- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-24: 96px;
+
+  /* ---------- z-layers ---------- */
+  --z-canvas: 0;
+  --z-content: 10;
+  --z-rail: 20;
+  --z-ask: 30;
+  --z-dossier: 40;
+  --z-overlay: 50;
+
+  /* ---------- glow ---------- */
+  --glow-current: 0 0 24px rgba(61, 139, 255, 0.35);
+  --glow-signal: 0 0 16px rgba(125, 227, 244, 0.3);
+
+  /* ---------- type scale ---------- */
+  --fs-hero: clamp(56px, 8vw, 128px);
+  --fs-h2: clamp(28px, 4vw, 48px);
+  --fs-h3: clamp(20px, 2.5vw, 28px);
+  --fs-body: clamp(15px, 1.1vw, 17px);
+  --fs-mono: 12px;
+
+  /* ---------- signature: data-driven type axis ----------
+     0..1, written by scroll (see TypeLoad component).
+     wdth = 110 - load * 28  →  110 (idle) … 82 (under load) */
+  --type-load: 0;
+}

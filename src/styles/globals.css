@@ -1,0 +1,365 @@
+@import "./tokens.css";
+
+/* ---------- base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--void);
+  color: var(--text-hi);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--current);
+  color: var(--void);
+}
+
+a {
+  color: inherit;
+}
+
+/* visible focus everywhere — never removed without replacement */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--s-6);
+}
+
+/* ---------- type roles ---------- */
+.display {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  /* signature: width axis responds to pipeline load */
+  font-variation-settings: "wdth" calc(110 - var(--type-load) * 28);
+  transition: font-variation-settings 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: var(--fs-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-lo);
+}
+
+/* ---------- header ---------- */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-rail);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--s-4) var(--s-6);
+  background: linear-gradient(var(--void) 30%, transparent);
+}
+
+.header nav {
+  display: flex;
+  gap: var(--s-6);
+  align-items: center;
+}
+
+.header a {
+  text-decoration: none;
+}
+
+.header nav a:hover {
+  color: var(--text-hi);
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  padding: 0 var(--s-6);
+  border-radius: var(--radius-s);
+  font-family: var(--font-body), sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid var(--line);
+  background: var(--glass-bg);
+  color: var(--text-hi);
+  backdrop-filter: blur(var(--glass-blur));
+  transition:
+    transform 0.15s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--current);
+}
+
+.btn--primary {
+  background: var(--current);
+  border-color: var(--current);
+  color: var(--void);
+}
+
+.btn--primary:hover {
+  box-shadow: var(--glow-current);
+}
+
+/* ---------- hero / claim ---------- */
+.claim {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--s-6);
+  position: relative;
+}
+
+.claim h1 {
+  font-size: var(--fs-hero);
+  margin: 0;
+}
+
+.claim .role {
+  font-size: var(--fs-h3);
+  color: var(--text-lo);
+  margin: 0;
+  font-weight: 400;
+}
+
+.claim .received {
+  color: var(--signal);
+}
+
+.claim .ctas {
+  display: flex;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  margin-top: var(--s-4);
+}
+
+/* ---------- the pipeline (2D form) ----------
+   One hairline runs the page's left margin; each section is a
+   station on it. This is the fallback-native form of the 3D
+   pipeline — same idea, zero WebGL. */
+.pipeline {
+  position: relative;
+}
+
+.pipeline::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    var(--line) 0%,
+    var(--current) 50%,
+    var(--line) 100%
+  );
+  opacity: 0.6;
+}
+
+.station {
+  position: relative;
+  padding: var(--s-16) 0 var(--s-16) var(--s-12);
+  scroll-margin-top: var(--s-16);
+}
+
+.station::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(var(--s-16) + 6px);
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid var(--current);
+  background: var(--void);
+}
+
+.station::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: calc(var(--s-16) + 11px);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--current);
+  box-shadow: var(--glow-current);
+}
+
+.station h2 {
+  font-size: var(--fs-h2);
+  margin: var(--s-2) 0 var(--s-6);
+}
+
+/* flow: a packet travels the hairline (reduced-motion: removed) */
+@media (prefers-reduced-motion: no-preference) {
+  .pipeline .packet {
+    position: absolute;
+    left: 5px;
+    top: 0;
+    width: 5px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--signal);
+    box-shadow: var(--glow-signal);
+    animation: flow 14s linear infinite;
+  }
+  @keyframes flow {
+    from {
+      top: 0%;
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    92% {
+      opacity: 1;
+    }
+    to {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .pipeline .packet {
+    display: none;
+  }
+  .display {
+    font-variation-settings: "wdth" 96;
+    transition: none;
+  }
+  .btn,
+  .card {
+    transition: none;
+  }
+}
+
+/* ---------- evidence cards ---------- */
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--s-6);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  text-decoration: none;
+  transition:
+    transform 0.15s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.15s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--current);
+}
+
+.card h3 {
+  margin: 0;
+  font-size: var(--fs-h3);
+}
+
+.card p {
+  margin: 0;
+  color: var(--text-lo);
+  font-size: 15px;
+}
+
+.card .verify {
+  margin-top: auto;
+  color: var(--current);
+  font-size: 14px;
+}
+
+/* ---------- telemetry ---------- */
+.telemetry {
+  display: flex;
+  gap: var(--s-8);
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.stat b {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-hi);
+  font-family: var(--font-mono), monospace;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.5);
+  margin-right: var(--s-2);
+}
+
+/* ---------- footer / verdict ---------- */
+.footer {
+  padding: var(--s-16) 0 var(--s-12);
+  border-top: 1px solid var(--line);
+  margin-top: var(--s-16);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-6);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .station {
+    padding-left: var(--s-8);
+  }
+  .header nav {
+    gap: var(--s-4);
+  }
+}
