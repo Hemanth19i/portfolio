@@ -160,12 +160,23 @@ a {
   margin-top: var(--s-4);
 }
 
+/* ---------- canvas layer (phase 2) ----------
+   aria-hidden scenery, fixed behind the DOM at z-0. Pointer events
+   stay with the page; the scene reads scroll, never owns it. */
+.canvas-root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-canvas);
+  pointer-events: none;
+}
+
 /* ---------- the pipeline (2D form) ----------
    One hairline runs the page's left margin; each section is a
    station on it. This is the fallback-native form of the 3D
    pipeline — same idea, zero WebGL. */
 .pipeline {
   position: relative;
+  z-index: var(--z-content);
 }
 
 .pipeline::before {

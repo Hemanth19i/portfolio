@@ -1,4 +1,5 @@
 import { TypeLoad } from "@/components/TypeLoad";
+import { PipelineCanvas } from "@/scenes/pipeline/PipelineCanvas";
 import { site, projects } from "@/lib/site.config";
 
 /* Phase 1 — the recruiter-usable core. Semantic HTML, zero WebGL.
@@ -9,6 +10,7 @@ export default function Home() {
   return (
     <>
       <TypeLoad />
+      <PipelineCanvas />
 
       <header className="header">
         <a href="#top" className="mono" style={{ color: "var(--text-hi)" }}>
