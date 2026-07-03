@@ -41,7 +41,8 @@ export async function resolveTier(): Promise<QualityTier> {
   if (!webglAvailable()) return 0;
 
   try {
-    const gpu = await getGPUTier();
+    // benchmarks self-hosted (copied from detect-gpu/dist) — no CDN call
+    const gpu = await getGPUTier({ benchmarksURL: "/benchmarks" });
     if (!gpu.tier) return 0;
     if (gpu.isMobile) return 1;
     return Math.min(gpu.tier, 3) as QualityTier;

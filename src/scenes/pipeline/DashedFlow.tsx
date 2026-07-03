@@ -11,9 +11,10 @@ import { pipelineCurve } from "./curve";
  */
 export function DashedFlow() {
   const line = useMemo(() => {
-    const geom = new THREE.BufferGeometry().setFromPoints(
-      pipelineCurve.getPoints(240),
-    );
+    // nudged toward the camera so the dashes read on top of the tube
+    const points = pipelineCurve.getPoints(240);
+    for (const p of points) p.z += 0.08;
+    const geom = new THREE.BufferGeometry().setFromPoints(points);
     const mat = new THREE.LineDashedMaterial({
       color: color.signal,
       dashSize: 0.18,
