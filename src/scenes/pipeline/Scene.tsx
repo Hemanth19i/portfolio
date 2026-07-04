@@ -2,15 +2,23 @@
 
 import { Canvas } from "@react-three/fiber";
 import { color } from "@/lib/tokens";
-import { MAX_DPR, PACKET_COUNT, type QualityTier } from "@/lib/gpu";
+import { MAX_DPR, PACKET_COUNT, caps, type QualityTier } from "@/lib/gpu";
 import { PipelineTube } from "./PipelineTube";
 import { Packets } from "./Packets";
 import { DashedFlow } from "./DashedFlow";
 import { CameraRig } from "./CameraRig";
+import { Stations } from "./Stations";
+import { DocumentGlyph } from "./DocumentGlyph";
+import { Backdrop } from "./Backdrop";
+import { Effects } from "./Effects";
+import { AmbientTicker } from "./AmbientTicker";
 
 /**
  * The canvas layer (Reference §6). aria-hidden scenery at z-0 — the DOM
- * carries every word. frameloop="demand"; the rig invalidates on scroll.
+ * carries every word. frameloop="demand"; the rig invalidates on scroll,
+ * and AmbientTicker drives continuous life when motion is allowed
+ * (ADR-004). Phase 2.5 adds bloom, station rings, the document glyph, a
+ * depth backdrop and mouse parallax, all tier-gated.
  */
 export default function Scene({
   tier,
@@ -21,6 +29,8 @@ export default function Scene({
   reducedMotion: boolean;
   onReady: () => void;
 }) {
+  const cap = caps(tier);
+
   return (
     <Canvas
       gl={{ antialias: true, powerPreference: "high-performance" }}
@@ -31,9 +41,20 @@ export default function Scene({
     >
       <color attach="background" args={[color.graphite]} />
       <fog attach="fog" args={[color.graphite, 8, 26]} />
+
+      <Backdrop />
       <PipelineTube />
-      {reducedMotion ? <DashedFlow /> : <Packets count={PACKET_COUNT[tier]} />}
-      <CameraRig reducedMotion={reducedMotion} />
+      <Stations reducedMotion={reducedMotion} />
+      <DocumentGlyph reducedMotion={reducedMotion} />
+      {reducedMotion ? (
+        <DashedFlow />
+      ) : (
+        <Packets count={PACKET_COUNT[tier]} trails={cap.trails} />
+      )}
+
+      <CameraRig reducedMotion={reducedMotion} parallax={cap.parallax} />
+      {!reducedMotion && <AmbientTicker />}
+      {cap.bloom && <Effects />}
     </Canvas>
   );
 }

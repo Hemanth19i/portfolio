@@ -20,6 +20,16 @@ export const MAX_DPR: Record<Exclude<QualityTier, 0>, number> = {
   3: 2,
 };
 
+/**
+ * Visual-presence capabilities per tier (Phase 2.5). Bloom, packet trails,
+ * and mouse parallax are desktop T2+ only; T1/mobile stays lean.
+ */
+export const caps = (tier: Exclude<QualityTier, 0>) => ({
+  bloom: tier >= 2,
+  trails: tier >= 2,
+  parallax: tier >= 2,
+});
+
 function webglAvailable(): boolean {
   try {
     const c = document.createElement("canvas");

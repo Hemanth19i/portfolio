@@ -170,6 +170,39 @@ a {
   pointer-events: none;
 }
 
+/* ---------- hero entrance (phase 2.5, CSS only) ----------
+   Staggered dock-in of the claim's children on first load this session.
+   Gated by html.do-entrance, set pre-paint (no flash). The dock verb:
+   dur 0.35s, ease.out, translateY 12px + fade, 60ms stagger. */
+.do-entrance .claim > * {
+  animation: entrance 0.35s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.do-entrance .claim > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.do-entrance .claim > *:nth-child(2) {
+  animation-delay: 60ms;
+}
+.do-entrance .claim > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+.do-entrance .claim > *:nth-child(4) {
+  animation-delay: 180ms;
+}
+.do-entrance .claim > *:nth-child(5) {
+  animation-delay: 240ms;
+}
+@keyframes entrance {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ---------- the pipeline (2D form) ----------
    One hairline runs the page's left margin; each section is a
    station on it. This is the fallback-native form of the 3D
@@ -274,6 +307,9 @@ a {
   .btn,
   .card {
     transition: none;
+  }
+  .do-entrance .claim > * {
+    animation: none;
   }
 }
 

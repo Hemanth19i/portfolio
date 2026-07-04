@@ -34,8 +34,16 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${display.variable} ${body.variable} ${mono.variable}`}>
+        {/* Hero entrance gate (Phase 2.5): set a class BEFORE paint so the
+            stagger plays once per session with no flash. Skipped under
+            reduced motion and on repeat visits this session. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var m=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!m&&!sessionStorage.getItem('entrance')){document.documentElement.classList.add('do-entrance');sessionStorage.setItem('entrance','1');}}catch(e){}`,
+          }}
+        />
         {children}
       </body>
     </html>
