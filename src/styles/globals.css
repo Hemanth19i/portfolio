@@ -504,6 +504,23 @@ a {
   opacity: 1;
 }
 
+/* trailing droplet (2.6b B1): one lagging dot behind the cursor, reads as
+   liquid drag. Transform written every frame; only opacity transitions. */
+.cursor-tail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: calc(var(--z-overlay) - 1);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--signal);
+  opacity: 0.35;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.15s;
+}
+
 /* ---------- stage indicator (scroll orientation) ---------- */
 .stage-indicator {
   position: fixed;

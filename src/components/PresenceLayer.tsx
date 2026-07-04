@@ -12,6 +12,12 @@ const DAMPING = 0.66;
 const MAGNET_RADIUS = 52; // px — .btn pull range
 const MAGNET_MAX = 8; // px — max pull
 
+/* Liquid droplet (2.6b B1): squash & stretch along velocity. */
+const SPEED_MAX = 32; // px/frame → full stretch
+const STRETCH_MAX = 0.8; // scaleX up to 1 + 0.8 = 1.8, scaleY compensates
+const MORPH_POP = 1.08; // elastic overshoot on morph transitions
+const TAIL_STIFF = STIFFNESS * 0.6; // trailing dot lags at ~60% spring speed
+
 type Mode = "dot" | "ring" | "label" | "crosshair";
 
 /**
@@ -28,6 +34,7 @@ type Mode = "dot" | "ring" | "label" | "crosshair";
 export function PresenceLayer() {
   const [cursorOn, setCursorOn] = useState(false);
   const dot = useRef<HTMLDivElement>(null);
+  const tail = useRef<HTMLDivElement>(null);
   const label = useRef<HTMLSpanElement>(null);
 
   // --- sound ticks: wired regardless of pointer type ---
@@ -63,17 +70,24 @@ export function PresenceLayer() {
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const pos = { ...target };
     const vel = { x: 0, y: 0 };
+    const tailPos = { ...target };
+    const tailVel = { x: 0, y: 0 };
     let mode: Mode = "dot";
     let magnet: HTMLElement | null = null;
+    let morphPop = 1; // decays toward 1 after each morph
+    let angle = 0; // last significant movement angle
     let raf = 0;
 
     const setMode = (next: Mode, text = "") => {
       if (next === mode && !text) return;
       mode = next;
+      morphPop = MORPH_POP; // elastic pop on every state change
       const el = dot.current;
       if (!el) return;
       el.dataset.mode = next;
       if (label.current) label.current.textContent = next === "label" ? text : "";
+      // the trailing droplet reads only in the plain dot state
+      if (tail.current) tail.current.style.opacity = next === "dot" ? "" : "0";
     };
 
     const onMove = (e: PointerEvent) => {
@@ -119,12 +133,37 @@ export function PresenceLayer() {
     };
 
     const tick = () => {
+      // main dot spring
       vel.x = (vel.x + (target.x - pos.x) * STIFFNESS) * DAMPING;
       vel.y = (vel.y + (target.y - pos.y) * STIFFNESS) * DAMPING;
       pos.x += vel.x;
       pos.y += vel.y;
+
+      // squash & stretch along velocity, area-preserving; spring back at rest
+      const speed = Math.hypot(vel.x, vel.y);
+      const sx = 1 + Math.min(speed / SPEED_MAX, 1) * STRETCH_MAX;
+      const sy = 1 / sx;
+      if (speed > 0.5) angle = Math.atan2(vel.y, vel.x);
+      morphPop += (1 - morphPop) * 0.18; // ease the elastic pop back to 1
+
       const el = dot.current;
-      if (el) el.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, -50%)`;
+      if (el) {
+        el.style.transform =
+          `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, -50%) ` +
+          `rotate(${angle}rad) scale(${(sx * morphPop).toFixed(3)}, ${(sy * morphPop).toFixed(3)})`;
+      }
+
+      // trailing droplet — slower spring toward the main dot
+      tailVel.x = (tailVel.x + (pos.x - tailPos.x) * TAIL_STIFF) * DAMPING;
+      tailVel.y = (tailVel.y + (pos.y - tailPos.y) * TAIL_STIFF) * DAMPING;
+      tailPos.x += tailVel.x;
+      tailPos.y += tailVel.y;
+      const t = tail.current;
+      if (t) {
+        t.style.transform =
+          `translate3d(${tailPos.x}px, ${tailPos.y}px, 0) translate(-50%, -50%) scale(0.7)`;
+      }
+
       raf = requestAnimationFrame(tick);
     };
 
@@ -140,8 +179,11 @@ export function PresenceLayer() {
   if (!cursorOn) return null;
 
   return (
-    <div ref={dot} className="cursor" data-mode="dot" aria-hidden="true">
-      <span ref={label} className="cursor__label mono" />
-    </div>
+    <>
+      <div ref={tail} className="cursor-tail" aria-hidden="true" />
+      <div ref={dot} className="cursor" data-mode="dot" aria-hidden="true">
+        <span ref={label} className="cursor__label mono" />
+      </div>
+    </>
   );
 }
