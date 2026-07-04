@@ -84,13 +84,14 @@ function blip(freq: number, gain: number, dur: number, type: OscillatorType) {
   osc.stop(now + dur + 0.02);
 }
 
-/** Hover tick — very quiet, suppressed under reduced motion. */
+/** Hover tick — very quiet (tuned 2.6b: if you notice it, it's too loud),
+ *  suppressed under reduced motion. */
 export function playHover(): void {
   if (reducedMotion()) return;
-  blip(420, 0.03, 0.03, "sine");
+  blip(420, 0.02, 0.03, "sine");
 }
 
-/** Click blip — a touch brighter; allowed even under reduced motion. */
+/** Click blip — a touch brighter, warmer pitch; allowed under reduced motion. */
 export function playClick(): void {
-  blip(720, 0.06, 0.05, "triangle");
+  blip(600, 0.06, 0.05, "triangle");
 }

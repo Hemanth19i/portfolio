@@ -6,11 +6,11 @@ import { playClick, playHover } from "@/lib/sound";
 /* Interactive selector shared by the cursor morph and the sound ticks. */
 const INTERACTIVE = "a, button, .btn, .card, [data-cursor]";
 
-/* Spring feel derived from motion.spring — slight overshoot is intentional. */
-const STIFFNESS = 0.18;
-const DAMPING = 0.72;
-const MAGNET_RADIUS = 40; // px — .btn pull range
-const MAGNET_MAX = 6; // px — max pull
+/* Spring feel (tuned 2.6b): slightly lazy follow with soft overshoot. */
+const STIFFNESS = 0.14;
+const DAMPING = 0.66;
+const MAGNET_RADIUS = 52; // px — .btn pull range
+const MAGNET_MAX = 8; // px — max pull
 
 type Mode = "dot" | "ring" | "label" | "crosshair";
 
