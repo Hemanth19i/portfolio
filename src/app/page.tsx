@@ -1,5 +1,8 @@
 import { TypeLoad } from "@/components/TypeLoad";
 import { PipelineCanvas } from "@/scenes/pipeline/PipelineCanvas";
+import { PresenceLayer } from "@/components/PresenceLayer";
+import { StageIndicator } from "@/components/StageIndicator";
+import { SoundToggle } from "@/components/SoundToggle";
 import { site, projects } from "@/lib/site.config";
 
 /* Phase 1 — the recruiter-usable core. Semantic HTML, zero WebGL.
@@ -11,6 +14,8 @@ export default function Home() {
     <>
       <TypeLoad />
       <PipelineCanvas />
+      <PresenceLayer />
+      <StageIndicator />
 
       <header className="header">
         <a href="#top" className="mono" style={{ color: "var(--text-hi)" }}>
@@ -31,6 +36,7 @@ export default function Home() {
           <a className="mono" href="#verdict">
             Contact
           </a>
+          <SoundToggle />
         </nav>
       </header>
 
@@ -38,7 +44,11 @@ export default function Home() {
         <span className="packet" aria-hidden="true" />
 
         {/* STAGE — CLAIM */}
-        <section className="claim station" aria-labelledby="claim-h">
+        <section
+          className="claim station"
+          aria-labelledby="claim-h"
+          data-cursor="crosshair"
+        >
           <p className="mono">claim — received</p>
           <h1 id="claim-h" className="display">
             {site.name}
@@ -74,6 +84,7 @@ export default function Home() {
                 href={p.href}
                 target="_blank"
                 rel="noreferrer"
+                data-cursor="verify"
               >
                 <p className="mono">{p.status}</p>
                 <h3>{p.name}</h3>
