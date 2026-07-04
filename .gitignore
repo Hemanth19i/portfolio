@@ -7,3 +7,6 @@ out/
 .DS_Store
 next-env.d.ts
 *.tsbuildinfo
+
+# redundant local clone made during setup — never commit
+/portfolio/
