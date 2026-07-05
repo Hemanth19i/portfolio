@@ -45,5 +45,19 @@ Treat the fluid field as pure garnish with no product dependency:
 Even gated, B2 is the most likely thing to be cut. The frame-time gate can
 only be judged on real T3 hardware (a software renderer is meaningless), so
 the keep/kill decision is made against measured numbers on Hemanth's
-machine, recorded in the PR — not asserted. If it trips either gate, it is
+machine, recorded here — not asserted. If it trips either gate, it is
 removed without argument and this ADR records why.
+
+## Measured verdict (T3 desktop, real GPU)
+
+Both gates pass with wide margin — **B2 is kept**:
+
+| Gate | Budget | Measured | Result |
+|---|---|---|---|
+| Frame time | ≤ ~12 ms | **~7.2 ms** (138 fps while stirring) | ✅ pass |
+| Lazy chunk (gz) | ≤ 25 KB | **2.3 KB** | ✅ pass |
+| GPU memory | — | 7.5 MB / 537 MB | negligible |
+| LCP / CLS / INP | 2.0 s / 0.05 / good | 0.63 s / 0.00 / 56 ms | ✅ within §7 |
+
+If future changes push frame time toward the gate, drop `ITERATIONS` first,
+then kill B2 and keep B1 — do not raise the gate.
