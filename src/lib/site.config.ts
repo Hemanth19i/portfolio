@@ -9,9 +9,8 @@ export const site = {
   currentProject: "AI Personal OS · Milestone 2 ✓",
   learningNow: ["GraphRAG", "Kùzu"],
   github: "https://github.com/Hemanth19i",
-  // TODO(hemanth): add your LinkedIn URL and email before deploy
-  linkedin: "",
-  email: "",
+  linkedin: "https://www.linkedin.com/in/hemanth-a-r-18i",
+  email: "hemanthha18@gmail.com",
   releases: [
     { v: "1.1", name: "ASK", state: "planned" },
     { v: "1.2", name: "THE LAB", state: "planned" },

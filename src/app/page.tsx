@@ -4,6 +4,7 @@ import { PresenceLayer } from "@/components/PresenceLayer";
 import { StageIndicator } from "@/components/StageIndicator";
 import { SoundToggle } from "@/components/SoundToggle";
 import { site, projects } from "@/lib/site.config";
+import { version } from "../../package.json";
 
 /* Phase 1 — the recruiter-usable core. Semantic HTML, zero WebGL.
    This page IS the 2D fallback; the 3D pipeline mounts on top of it
@@ -166,7 +167,7 @@ export default function Home() {
           <span className="mono">
             designed &amp; engineered by {site.name}
           </span>
-          <span className="mono">v0.1 · phase 1 · proof before motion</span>
+          <span className="mono">v{version} · proof before motion</span>
         </footer>
       </main>
     </>
