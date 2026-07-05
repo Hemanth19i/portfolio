@@ -1,6 +1,7 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
+import { useEffect, useState, type ComponentType } from "react";
 import { color } from "@/lib/tokens";
 import { MAX_DPR, PACKET_COUNT, caps, type QualityTier } from "@/lib/gpu";
 import { PipelineTube } from "./PipelineTube";
@@ -31,6 +32,22 @@ export default function Scene({
 }) {
   const cap = caps(tier);
 
+  // B2 fluid field — T3 desktop, motion allowed, fine pointer only. Loaded
+  // via a separate dynamic import so T2-and-below never download it. Kill-
+  // gated by frame time on real hardware (ADR-008).
+  const [fluid, setFluid] = useState<ComponentType | null>(null);
+  useEffect(() => {
+    const fine = window.matchMedia("(pointer: fine)").matches;
+    if (tier !== 3 || reducedMotion || !fine) return;
+    let alive = true;
+    import("./fluid/FluidField").then((m) => {
+      if (alive) setFluid(() => m.FluidField as ComponentType);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [tier, reducedMotion]);
+
   return (
     <Canvas
       gl={{ antialias: true, powerPreference: "high-performance" }}
@@ -54,7 +71,7 @@ export default function Scene({
 
       <CameraRig reducedMotion={reducedMotion} parallax={cap.parallax} />
       {!reducedMotion && <AmbientTicker />}
-      {cap.bloom && <Effects />}
+      {cap.bloom && <Effects fluid={fluid} />}
     </Canvas>
   );
 }
